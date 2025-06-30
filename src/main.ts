@@ -1,4 +1,4 @@
-import { makeProportions, makeVerticalScale } from "../lib/main"
+import { makeProportions, makeVerticalScale, makeHorizontalScale } from "../lib/main"
 
 const testGroups = ["Democrat", "Independent", "Republican"];
 const testResponses = [
@@ -30,6 +30,8 @@ const proportions = makeProportions(
 );
 const margin = { top: 10, right: 120, bottom: 10, left: 120 };
 const verticalScale = makeVerticalScale(proportions, 20, margin, 500);
+const horizontalScale = makeHorizontalScale(proportions, 50, margin, 800);
 
 console.log("proportions:", proportions);
 console.log("vertical scale:", verticalScale);
+console.log("horizontal scale:", horizontalScale);

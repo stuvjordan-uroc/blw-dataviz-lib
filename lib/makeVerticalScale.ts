@@ -1,17 +1,6 @@
-type ResponsesProportionMap = Map<Array<string>, number>;
-type ProportionsMap = Map<Array<string>, ResponsesProportionMap>;
-interface Segment {
-  top: number;
-  height: number;
-}
-type ResponsesSegmentMap = Map<Array<string>, Segment>;
-type VerticalScale = Map<Array<string>, ResponsesSegmentMap>;
-interface Margin {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-}
+import type { ProportionsMap, ResponsesSegmentMap, VerticalScale, Margin } from "./types";
+
+
 
 export function makeVerticalScale(
   proportionsMap: ProportionsMap,
@@ -22,19 +11,21 @@ export function makeVerticalScale(
   const verticalScale: VerticalScale = new Map();
   proportionsMap.keys().forEach(group => {
     const responseScale: ResponsesSegmentMap = new Map();
+    const responseArray = Array.from(proportionsMap.get(group)?.keys())
     const totalHeight =
       vizHeight -
+      margin.top -
+      margin.bottom -
       segmentPadding *
-        (Array.from(proportionsMap.get(group).keys()).length - 1);
-    const responseArray = Array.from(proportionsMap.get(group)?.keys());
+      (responseArray.length - 1);
     for (let i = 0; i < responseArray.length; i++) {
       responseScale.set(responseArray[i], {
         top:
           i === 0
             ? margin.top
             : responseScale.get(responseArray[i - 1]).top +
-              responseScale.get(responseArray[i - 1]).height +
-              segmentPadding,
+            responseScale.get(responseArray[i - 1]).height +
+            segmentPadding,
         height: proportionsMap.get(group).get(responseArray[i]) * totalHeight,
       });
     }
