@@ -1,5 +1,10 @@
 import { segmentViz } from "../lib/main"
 
+interface ExampleDataPoint{
+  bidenWinner: string,
+  pid3: string
+}
+
 //example data
 
 const exampleGroups = ["Democrat", "Independent", "Republican"];
@@ -10,7 +15,7 @@ const exampleResponses = [
   "Definitely the rightful winner",
 ];
 
-const exampleData: Array<{ bidenWinner: string; pid3: string }> = new Array(100)
+const exampleData: Array<ExampleDataPoint> = new Array(100)
   .fill(1)
   .map(el => ({
     bidenWinner: exampleResponses[Math.floor(Math.random() * exampleResponses.length)],
@@ -38,6 +43,7 @@ const svg = frame.append("svg")
 const margin = { top: 10, right: 120, bottom: 10, left: 120 };
 
 //make the viz object
+
 const viz = segmentViz(
   exampleData,
   groups,
@@ -50,6 +56,44 @@ const viz = segmentViz(
   -30 + (frameWidth - margin.left - margin.right)/3.0,
   20
 )
-console.log(viz)
 
+//make the selection of points
+/*
+const pointsSelection = svg.selectAll("circle")
+  .data(exampleData)
+  .join("circle")
+    .attr("class", (d: ExampleDataPoint,idx: number) => {
+      switch(d.pid3) {
+        case "Democrat":
+          return("democrat")
+          break;
+        case "Independent":
+          return("independent")
+          break;
+        case "Republican":
+          return("republican")
+          break;
+        default:
+          throw new Error(`data point at index ${idx} has an invalid pid3`)
+      }
+    })
+    .attr("cx", (d: ExampleDataPoint) => {
+      const min = viz.X(d.pid3)?.xMin
+      const max = viz.X(d.pid3)?.xMax
+      if (min === undefined || max === undefined){
+        return "none"
+      }
+      return (min + Math.random()*(max-min))
+    })
+    .attr("cy", (d: ExampleDataPoint) => {
+      const min = viz.Y(d.pid3, d.bidenWinner)?.yMin
+      const max = viz.Y(d.pid3, d.bidenWinner)?.yMax
+      if (min === undefined || max === undefined){
+        return "none"
+      }
+      return(min + Math.random()*(max-min))
+    })
+
+console.log(pointsSelection)
+*/
 
