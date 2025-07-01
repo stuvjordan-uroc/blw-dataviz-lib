@@ -8,5 +8,9 @@ export default defineConfig({
       entry: resolve(__dirname, 'lib/main.ts'),
       formats: ['es']
     }
+  },
+  server: {
+    port: 8002,
+    host: '127.0.0.1'
   }
 })

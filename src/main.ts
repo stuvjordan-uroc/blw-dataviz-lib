@@ -57,6 +57,10 @@ const viz = segmentViz(
   20
 )
 
+//test the viz object on a few points
+console.log("X at Independent:", viz.X("Independent"))
+console.log("Y at Indenepdent, Probably not the rightful winner", viz.Y("Independent", "Probably not the rightful winner"))
+console.log("here is the hScale:", viz.hScale)
 //make the selection of points
 /*
 const pointsSelection = svg.selectAll("circle")
