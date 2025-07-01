@@ -1,37 +1,55 @@
-import { makeProportions, makeVerticalScale, makeHorizontalScale } from "../lib/main"
+import { segmentViz } from "../lib/main"
 
-const testGroups = ["Democrat", "Independent", "Republican"];
-const testResponses = [
+//example data
+
+const exampleGroups = ["Democrat", "Independent", "Republican"];
+const exampleResponses = [
   "Definitely not the rightful winner",
   "Probably not the rightful winner",
   "Probably the rightful winner",
   "Definitely the rightful winner",
 ];
 
-const testData: Array<{ bidenWinner: string; pid3: string }> = new Array(100)
+const exampleData: Array<{ bidenWinner: string; pid3: string }> = new Array(100)
   .fill(1)
   .map(el => ({
-    bidenWinner:
-      testResponses[Math.floor(Math.random() * testResponses.length)],
-    pid3: testGroups[Math.floor(Math.random() * testGroups.length)],
+    bidenWinner: exampleResponses[Math.floor(Math.random() * exampleResponses.length)],
+    pid3: exampleGroups[Math.floor(Math.random() * exampleGroups.length)],
   }));
+
+//set up the groups and responses for the plot
 
 const groups = [["Democrat"], ["Independent"], ["Republican"]];
 const responses = [
   ["Definitely the rightful winner", "Probably the rightful winner"],
   ["Probably not the rightful winner", "Definitely not the rightful winner"],
 ];
-const proportions = makeProportions(
-  testData,
+
+//append the svg and get the width and height
+
+const frame = d3.select("#svg-frame")
+const frameWidth = parseFloat(frame.style("width"))
+const frameHeight = parseFloat(frame.style("height"))
+const svg = frame.append("svg")
+  .attr("width", "100%")
+  .attr("height", "100%")
+
+//set the margin object
+const margin = { top: 10, right: 120, bottom: 10, left: 120 };
+
+//make the viz object
+const viz = segmentViz(
+  exampleData,
+  groups,
+  responses,
   "bidenWinner",
   "pid3",
-  groups,
-  responses
-);
-const margin = { top: 10, right: 120, bottom: 10, left: 120 };
-const verticalScale = makeVerticalScale(proportions, 20, margin, 500);
-const horizontalScale = makeHorizontalScale(proportions, 50, margin, 800);
+  margin,
+  frameWidth,
+  frameHeight,
+  -30 + (frameWidth - margin.left - margin.right)/3.0,
+  20
+)
+console.log(viz)
 
-console.log("proportions:", proportions);
-console.log("vertical scale:", verticalScale);
-console.log("horizontal scale:", horizontalScale);
+
