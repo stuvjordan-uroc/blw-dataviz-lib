@@ -35,6 +35,8 @@ const responses = [
 const frame = d3.select("#svg-frame")
 const frameWidth = parseFloat(frame.style("width"))
 const frameHeight = parseFloat(frame.style("height"))
+console.log("frameWidth:", frameWidth)
+console.log("frameHeight:", frameHeight)
 const svg = frame.append("svg")
   .attr("width", "100%")
   .attr("height", "100%")
@@ -60,7 +62,8 @@ const viz = segmentViz(
 //test the viz object on a few points
 console.log("X at Independent:", viz.X("Independent"))
 console.log("Y at Indenepdent, Probably not the rightful winner", viz.Y("Independent", "Probably not the rightful winner"))
-console.log("here is the hScale:", viz.hScale)
+console.log("here is the vScale:", viz.vScale)
+console.log("here are the proportions:", viz.proportions)
 //make the selection of points
 /*
 const pointsSelection = svg.selectAll("circle")

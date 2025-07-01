@@ -8,19 +8,9 @@ export function makeProportions(
   groups: Array<Array<string>>,
   responses: Array<Array<string>>
 ): ProportionsMap {
-  //check if the responseKey and groupKey are valid
-  if (responseKey === undefined) {
-    throw new Error(
-      "You called makeProportions, but you did not specify a response key."
-    );
-  }
-  if (groupKey === undefined) {
-    throw new Error(
-      "You called makeProportions, but you did not specify a group key"
-    );
-  }
   const proportionsMap = new Map();
   groups.forEach(groupArray => {
+    console.log("calculating proportions for group:", groupArray)
     const groupMap = new Map();
     const groupCount = data.filter(row => {
       if (!row.hasOwnProperty(groupKey)) {
@@ -30,20 +20,21 @@ export function makeProportions(
       }
       return groupArray.includes(row[groupKey]);
     }).length;
+    console.log("This group's count is:", groupCount)
     responses.forEach(responseArray => {
-      groupMap.set(
-        responseArray,
-        data.filter(row => {
-          if (!row.hasOwnProperty(responseKey)) {
-            throw new Error(
+      console.log("working on response array:", responseArray)
+      const responseCount = data.filter(row => {
+        if (!row.hasOwnProperty(responseKey)) {
+          throw new Error(
               `You called makeProportions and passed response key ${responseKey}. But there is a row in your data that does not have ${responseKey} as a key.`
             );
-          }
-          return (
-            responseArray.includes(row[responseKey]) &&
-            groupArray.includes(row[groupKey])
-          );
-        }).length / groupCount
+        }
+        return(responseArray.includes(row[responseKey]) && groupArray.includes(row[groupKey]))
+      }).length
+      console.log("response count is:", responseCount)
+      groupMap.set(
+        responseArray,
+        responseCount / groupCount
       );
     });
     proportionsMap.set(groupArray, groupMap);

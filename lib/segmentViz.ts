@@ -18,6 +18,12 @@ export function segmentViz(
   segmentWidth: number,
   segmentVerticalPadding: number
 ){
+  if (segmentWidth < 0) {
+    throw new Error("segmentWidth cannot be less than 0")
+  }
+  if (segmentVerticalPadding < 0) {
+    throw new Error("segment vertical padding cannot be less than 0")
+  }
   const proportions = makeProportions(data, responseKey, groupKey, groups, responses)
   const hScale: HorizontalScale = makeHorizontalScale(proportions, segmentWidth, margin, vizWidth)
   const vScale = makeVerticalScale(proportions, segmentVerticalPadding, margin, vizHeight)
@@ -80,6 +86,7 @@ export function segmentViz(
     X: X,
     Y: Y,
     P: P,
-    hScale: hScale
+    vScale: vScale,
+    proportions: proportions
   })
 }
