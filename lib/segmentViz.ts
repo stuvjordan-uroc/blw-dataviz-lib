@@ -24,7 +24,7 @@ export function segmentViz(
   if (segmentVerticalPadding < 0) {
     throw new Error("segment vertical padding cannot be less than 0")
   }
-  const proportions = makeProportions(data, responseKey, groupKey, groups, responses)
+  const proportions = makeProportions(data, groups, responses, groupKey, responseKey)
   const hScale: HorizontalScale = makeHorizontalScale(proportions, segmentWidth, margin, vizWidth)
   const vScale = makeVerticalScale(proportions, segmentVerticalPadding, margin, vizHeight)
   const getGroupArray = (group: string): Array<string> | undefined => {

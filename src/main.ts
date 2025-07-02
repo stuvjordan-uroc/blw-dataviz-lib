@@ -1,9 +1,5 @@
 import { segmentViz } from "../lib/main"
 
-interface ExampleDataPoint{
-  bidenWinner: string,
-  pid3: string
-}
 
 //example data
 
@@ -15,7 +11,7 @@ const exampleResponses = [
   "Definitely the rightful winner",
 ];
 
-const exampleData: Array<ExampleDataPoint> = new Array(100)
+const exampleData: Array<{[key: string]: string}> = new Array(100)
   .fill(1)
   .map(el => ({
     bidenWinner: exampleResponses[Math.floor(Math.random() * exampleResponses.length)],
@@ -50,8 +46,8 @@ const viz = segmentViz(
   exampleData,
   groups,
   responses,
-  "bidenWinner",
   "pid3",
+  "bidenWinner",
   margin,
   frameWidth,
   frameHeight,

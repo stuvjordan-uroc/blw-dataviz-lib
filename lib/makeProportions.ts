@@ -3,14 +3,13 @@ import type { ProportionsMap } from "./types";
 
 export function makeProportions(
   data: Array<{ [key: string]: string }>,
-  responseKey: string,
-  groupKey: string,
   groups: Array<Array<string>>,
-  responses: Array<Array<string>>
+  responses: Array<Array<string>>,
+  groupKey: string,
+  responseKey: string
 ): ProportionsMap {
   const proportionsMap = new Map();
   groups.forEach(groupArray => {
-    console.log("calculating proportions for group:", groupArray)
     const groupMap = new Map();
     const groupCount = data.filter(row => {
       if (!row.hasOwnProperty(groupKey)) {
@@ -20,9 +19,10 @@ export function makeProportions(
       }
       return groupArray.includes(row[groupKey]);
     }).length;
-    console.log("This group's count is:", groupCount)
+    if (groupCount === 0) {
+      throw new Error(`There are no rows in the data with values at key ${groupKey} in array ${groupArray}`)
+    }
     responses.forEach(responseArray => {
-      console.log("working on response array:", responseArray)
       const responseCount = data.filter(row => {
         if (!row.hasOwnProperty(responseKey)) {
           throw new Error(
@@ -31,7 +31,6 @@ export function makeProportions(
         }
         return(responseArray.includes(row[responseKey]) && groupArray.includes(row[groupKey]))
       }).length
-      console.log("response count is:", responseCount)
       groupMap.set(
         responseArray,
         responseCount / groupCount
