@@ -3,6 +3,7 @@
 .svg-frame {
   width: 1000px;
   height: 562px;
+  min-height: 562px;
 }
 
 circle {

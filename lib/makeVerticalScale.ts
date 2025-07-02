@@ -9,25 +9,22 @@ export function makeVerticalScale(
   vizHeight: number
 ): VerticalScale {
   const verticalScale: VerticalScale = new Map();
-  proportionsMap.keys().forEach(group => {
+  Array.from(proportionsMap.keys()).forEach(group => {
     const responseScale: ResponsesSegmentMap = new Map();
-    const responseArray = Array.from(proportionsMap.get(group)?.keys())
-    const totalHeight =
-      vizHeight -
-      margin.top -
-      margin.bottom -
-      segmentPadding *
-      (responseArray.length - 1);
-    for (let i = 0; i < responseArray.length; i++) {
-      responseScale.set(responseArray[i], {
-        top:
-          i === 0
-            ? margin.top
-            : responseScale.get(responseArray[i - 1]).top +
-            responseScale.get(responseArray[i - 1]).height +
-            segmentPadding,
-        height: proportionsMap.get(group).get(responseArray[i]) * totalHeight,
-      });
+    const arrayOfResponseGroups = Array.from(proportionsMap.get(group)?.keys())
+    const totalHeight = vizHeight - margin.top - margin.bottom - segmentPadding *(arrayOfResponseGroups.length - 1);
+    for (let i = 0; i < arrayOfResponseGroups.length; i++){
+      const top = (i === 0) ? margin.top : responseScale.get(arrayOfResponseGroups[i-1]).top + responseScale.get(arrayOfResponseGroups[i-1]).height + segmentPadding
+      responseScale.set(arrayOfResponseGroups[i],
+        {
+          top: top,
+          height: totalHeight*proportionsMap.get(group)?.get(arrayOfResponseGroups[i])
+        }
+      )
+      console.log("here's an example of a height calculation")
+      console.log("total height is", totalHeight)
+      console.log(`proportion of group ${group} responding with`, arrayOfResponseGroups[i], "is", proportionsMap.get(group)?.get(arrayOfResponseGroups[i]))
+      console.log("so height is:", totalHeight*proportionsMap.get(group)?.get(arrayOfResponseGroups[i]))
     }
     verticalScale.set(group, responseScale);
   });
