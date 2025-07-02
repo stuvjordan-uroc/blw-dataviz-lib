@@ -9,7 +9,7 @@ export function makeHorizontalScale(
   const groupsArray = Array.from(proportions.keys());
   const blankSpace = vizWidth - margin.left - margin.right - (groupsArray.length * bandwidth)
   if (blankSpace < 0) {
-    throw new Error("You called makeHorizontal scale with a vizWidth thats too small, given the margins and bandwidth")
+    throw new Error("You called makeHorizontal scale with a vizWidth that is too small, given the margins and bandwidth")
   }
   const padding = blankSpace / (groupsArray.length - 1)
   const horizontalScale: HorizontalScale = new Map()

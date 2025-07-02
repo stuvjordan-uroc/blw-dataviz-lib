@@ -86,6 +86,7 @@ export function segmentViz(
     X: X,
     Y: Y,
     P: P,
+    hScale: hScale,
     vScale: vScale,
     proportions: proportions
   })
