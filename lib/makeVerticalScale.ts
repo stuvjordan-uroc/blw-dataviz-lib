@@ -20,11 +20,7 @@ export function makeVerticalScale(
           top: top,
           height: totalHeight*proportionsMap.get(group)?.get(arrayOfResponseGroups[i])
         }
-      )
-      console.log("here's an example of a height calculation")
-      console.log("total height is", totalHeight)
-      console.log(`proportion of group ${group} responding with`, arrayOfResponseGroups[i], "is", proportionsMap.get(group)?.get(arrayOfResponseGroups[i]))
-      console.log("so height is:", totalHeight*proportionsMap.get(group)?.get(arrayOfResponseGroups[i]))
+      )  
     }
     verticalScale.set(group, responseScale);
   });
