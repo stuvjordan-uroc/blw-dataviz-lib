@@ -1,10 +1,50 @@
-import type { Margin, HorizontalScale } from "./types"
+import type { Margin, HorizontalScale, HorizontalConfig } from "./types"
 interface DataRow {
   [key: string]: string
 }
 import { makeProportions } from "./makeProportions"
 import { makeHorizontalScale } from "./makeHorizontalScale"
 import { makeVerticalScale } from "./makeVerticalScale"
+
+
+export class verticalSegmentViz {
+  constructor(config: HorizontalConfig) {
+    //check that the groupKey and responseKey are present and strings as required
+    if (
+      config.groupKey === undefined || config.responseKey === undefined ||
+      config.groupKey === null || config.responseKey === null ||
+      !(typeof config.groupKey === "string") || !(typeof config.groupKey === "string")
+    ) {
+      throw new Error("groupKey and responseKey must be defined and included in config object passed to verticalSegmentViz constructor.")
+    }
+    //check that the data is defined, has the right structure,
+    //and that the rows have properties groupKey and responseKey
+    if (
+      config.data === undefined || config.data === null || !(Array.isArray(config.data)) || 
+      !config.data.every(row => (
+        row !== null && typeof row === 'object' &&
+        Object.hasOwn(row, config.groupKey) && Object.hasOwn(row, config.responseKey)
+      ))
+    ) {
+      throw new Error("The config passed to constructor of verticalSegmentViz is either undefined or null, or has at least one row that is null, not an object, or not an object with the responseKey and groupKey you passed.")
+    }
+    //check that the groups array is defined, correctly structured, and has valid entries
+    if (
+      config.groups === undefined || config.groups === null ||
+      !(Array.isArray(config.groups)) ||
+      config.groups.some(group => (
+        group === null || !Array.isArray(group) ||
+        group.some(entry => (
+          entry === null || typeof entry !== "string"
+        ))
+      ))
+    )
+    //check that every group in the groups array has more than zero rows in data.
+
+    //check that there's enough vertical space
+    
+  }
+}
 
 export function segmentViz(
   data: Array<DataRow>, 

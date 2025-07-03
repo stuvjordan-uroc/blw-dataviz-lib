@@ -4,6 +4,9 @@ export interface Segment {
   top: number;
   height: number;
 }
+export interface DataRow {
+  [key: string]: string
+}
 export type ResponsesSegmentMap = Map<Array<string>, Segment>;
 export type VerticalScale = Map<Array<string>, ResponsesSegmentMap>;
 export interface Margin {
@@ -17,3 +20,15 @@ export interface Band {
   width: number;
 }
 export type HorizontalScale = Map<Array<string>,Band>
+export interface HorizontalConfig {
+  data: Array<DataRow>, 
+  groups: Array<Array<string>>, 
+  responses: Array<Array<string>>, 
+  groupKey: string, 
+  responseKey: string,
+  margin: Margin, 
+  vizWidth: number, 
+  vizHeight: number,
+  segmentWidth: number,
+  segmentVerticalPadding: number
+}
