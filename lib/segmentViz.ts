@@ -8,7 +8,9 @@ import { makeVerticalScale } from "./makeVerticalScale"
 
 
 export class VerticalSegmentViz {
-  proportions: ProportionsMap
+  #proportions: ProportionsMap
+  config: HorizontalConfig
+  P: (string, string) => number
   constructor(config: HorizontalConfig) {
     //check that the groupKey and responseKey are present and strings as required
     if (
@@ -21,8 +23,8 @@ export class VerticalSegmentViz {
     //check that the data is defined, has the right structure,
     //and that the rows have properties groupKey and responseKey
     if (
-      config.data === undefined || config.data === null || 
-      !(Array.isArray(config.data)) || 
+      config.data === undefined || config.data === null ||
+      !(Array.isArray(config.data)) ||
       !config.data.every(row => (
         row !== null && typeof row === 'object' &&
         Object.hasOwn(row, config.groupKey) && Object.hasOwn(row, config.responseKey)
@@ -45,14 +47,14 @@ export class VerticalSegmentViz {
     }
     //check that every group in the groups array has more than zero rows in data.
     config.groups.forEach(group => {
-      if (!config.data.some(row => group.includes(row[config.groupKey]))){
+      if (!config.data.some(row => group.includes(row[config.groupKey]))) {
         throw new Error(`In the config you passed to the verticalSegmentViz constructor, there are zero rows in the data with property ${config.groupKey} contained in group ${group}`)
       }
     })
     //check that the entries of the groupArray are mutually exclusive
     const groupsAsSets = config.groups.map(group => (new Set(group)))
-    for (let i = 0; i < config.groups.length - 1; i++){
-      for (let j = i + 1; j < config.groups.length; j++){
+    for (let i = 0; i < config.groups.length - 1; i++) {
+      for (let j = i + 1; j < config.groups.length; j++) {
         if (!groupsAsSets[i].isDisjointFrom(groupsAsSets[j])) {
           throw new Error(`The groups you passed to the verticalSegmentViz constructor are not mutually exclusive.`)
         }
@@ -81,8 +83,8 @@ export class VerticalSegmentViz {
     })
     //check that the response groups are mutually exclusive
     const responsesAsSets = config.responses.map(responseArray => (new Set(responseArray)))
-    for (let i = 0; i < config.responses.length - 1; i++){
-      for (let j = i + 1; j < config.responses.length; j++){
+    for (let i = 0; i < config.responses.length - 1; i++) {
+      for (let j = i + 1; j < config.responses.length; j++) {
         if (!responsesAsSets[i].isDisjointFrom(responsesAsSets[j])) {
           throw new Error(`The responses you passed to the verticalSegmentViz constructor are not mutually exclusive.`)
         }
@@ -104,7 +106,7 @@ export class VerticalSegmentViz {
       config.segmentWidth === undefined || config.segmentWidth === null ||
       typeof config.segmentWidth !== "number" ||
       config.segmentVerticalPadding === undefined || config.segmentVerticalPadding === null ||
-      typeof config.segmentVerticalPadding !== "number" 
+      typeof config.segmentVerticalPadding !== "number"
     ) {
       throw new Error("In the config you passed to the VerticalSegmentViz constructor, either margin is undefined, null, or does not have the required proporties, or one or more of the required properties are not numbers, or vizWidth, vizHeight, segmentWidth, or segmentHeight are null, undefined or not numbers.")
     }
@@ -112,9 +114,9 @@ export class VerticalSegmentViz {
     if (
       config.vizHeight - (
         config.margin.top + config.margin.bottom +
-        config.segmentVerticalPadding*config.responses.length
+        config.segmentVerticalPadding * config.responses.length
       ) <= 0
-    ){
+    ) {
       throw new Error(`In the config you passed to the verticalSegmentViz constructor, the margin.top plus the margin.bottom plus the vertical padding times (responses.length-1) exceeds the vizHeight.`)
     }
 
@@ -122,28 +124,44 @@ export class VerticalSegmentViz {
     if (
       config.vizWidth - (
         config.margin.left + config.margin.right +
-        config.segmentWidth*config.groups.length
+        config.segmentWidth * config.groups.length
       ) < 0
-    ){
+    ) {
       throw new Error(`In the config you passed to the verticalSegmentViz constructor, the margin.left plus the margin.right plus the segmentWidth times groups.length exceeds the vizWidth.`)
     }
-
-    this.proportions = makeProportions(config.data, config.groups, config.responses, config.groupKey, config.responseKey)
+    this.config = config
+    this.#proportions = makeProportions(config.data, config.groups, config.responses, config.groupKey, config.responseKey)
+    this.P = (group: string, response: string) => {
+      const groupArray = getGroupArray(group)
+      const responseArray = getResponseArray(response)
+      if (groupArray === undefined || responseArray === undefined) {
+        return null
+      }
+      const groupProp = proportions.get(groupArray)
+      if (groupProp === undefined) {
+        return null
+      }
+      const prop = groupProp.get(responseArray)
+      if (prop === undefined) {
+        return null
+      }
+      return prop
+    }
   }
 }
 
 export function segmentViz(
-  data: Array<DataRow>, 
-  groups: Array<Array<string>>, 
-  responses: Array<Array<string>>, 
-  groupKey: string, 
+  data: Array<DataRow>,
+  groups: Array<Array<string>>,
+  responses: Array<Array<string>>,
+  groupKey: string,
   responseKey: string,
-  margin: Margin, 
-  vizWidth: number, 
+  margin: Margin,
+  vizWidth: number,
   vizHeight: number,
   segmentWidth: number,
   segmentVerticalPadding: number
-){
+) {
   if (segmentWidth < 0) {
     throw new Error("segmentWidth cannot be less than 0")
   }
@@ -154,9 +172,9 @@ export function segmentViz(
   const hScale: HorizontalScale = makeHorizontalScale(proportions, segmentWidth, margin, vizWidth)
   const vScale = makeVerticalScale(proportions, segmentVerticalPadding, margin, vizHeight)
   const getGroupArray = (group: string): Array<string> | undefined => {
-     return groups.find(arrayOfGroups => arrayOfGroups.includes(group))
+    return groups.find(arrayOfGroups => arrayOfGroups.includes(group))
   }
-  const X = (group: string): {xMin: number, xMax: number} | null => {
+  const X = (group: string): { xMin: number, xMax: number } | null => {
     const groupArray = getGroupArray(group)
     if (groupArray === undefined) {
       return null
@@ -165,7 +183,7 @@ export function segmentViz(
     if (band === undefined) {
       return null
     }
-    return({
+    return ({
       xMin: band.left,
       xMax: band.left + band.width
     })
@@ -173,7 +191,7 @@ export function segmentViz(
   const getResponseArray = (response: string): Array<string> | undefined => {
     return responses.find(arrayOfResponses => arrayOfResponses.includes(response))
   }
-  const Y = (group: string, response: string): {yMin: number, yMax: number} | null => {
+  const Y = (group: string, response: string): { yMin: number, yMax: number } | null => {
     const groupArray = getGroupArray(group)
     const responseArray = getResponseArray(response)
     if (groupArray === undefined || responseArray === undefined) {
@@ -207,7 +225,7 @@ export function segmentViz(
       return null
     }
     return prop
-  }  
+  }
   return ({
     X: X,
     Y: Y,
