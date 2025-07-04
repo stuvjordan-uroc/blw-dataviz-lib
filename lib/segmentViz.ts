@@ -1,4 +1,4 @@
-import type { Margin, HorizontalScale, HorizontalConfig, ProportionsMap, ResponsesProportionMap } from "./types"
+import type { Margin, HorizontalScale, HorizontalConfig, ProportionsMap, } from "./types"
 interface DataRow {
   [key: string]: string
 }
@@ -49,6 +49,15 @@ export class VerticalSegmentViz {
         throw new Error(`In the config you passed to the verticalSegmentViz constructor, there are zero rows in the data with property ${config.groupKey} contained in group ${group}`)
       }
     })
+    //check that the entries of the groupArray are mutually exclusive
+    const groupsAsSets = config.groups.map(group => (new Set(group)))
+    for (let i = 0; i < config.groups.length - 1; i++){
+      for (let j = i + 1; j < config.groups.length; j++){
+        if (!groupsAsSets[i].isDisjointFrom(groupsAsSets[j])) {
+          throw new Error(`The groups you passed to the verticalSegmentViz constructor are not mutually exclusive.`)
+        }
+      }
+    }
     //check that the responses array is defined, correctly structured, and has valid entries
     if (
       config.responses === undefined || config.responses === null ||
@@ -66,10 +75,39 @@ export class VerticalSegmentViz {
     config.groups.forEach(group => {
       const groupData = config.data.filter(row => group.includes(row[config.groupKey]))
       const excludedRows = groupData.filter(row => config.responses.every(responseGroup => !responseGroup.includes(row[config.responseKey]))).length
-      if (excludedRows === 0) {
+      if (excludedRows > 0) {
         throw new Error(`In the data you passed to the verticalSegmentViz constructor, there are rows in group ${group} that are not included in any of the response you passed to the config.`)
       }
     })
+    //check that the response groups are mutually exclusive
+    const responsesAsSets = config.responses.map(responseArray => (new Set(responseArray)))
+    for (let i = 0; i < config.responses.length - 1; i++){
+      for (let j = i + 1; j < config.responses.length; j++){
+        if (!responsesAsSets[i].isDisjointFrom(responsesAsSets[j])) {
+          throw new Error(`The responses you passed to the verticalSegmentViz constructor are not mutually exclusive.`)
+        }
+      }
+    }
+    //throw an error if any dimensions are null, undefined, or the wrong type
+    if (
+      config.margin === undefined || config.margin === null ||
+      ["top", "right", "bottom", "left"].some(p => (
+        !Object.hasOwn(config.margin, p) ||
+        config.margin[p] === undefined ||
+        config.margin[p] === null ||
+        typeof config.margin[p] !== "number"
+      )) ||
+      config.vizWidth === undefined || config.vizWidth === null ||
+      typeof config.vizWidth !== "number" ||
+      config.vizHeight === undefined || config.vizHeight === null ||
+      typeof config.vizHeight !== "number" ||
+      config.segmentWidth === undefined || config.segmentWidth === null ||
+      typeof config.segmentWidth !== "number" ||
+      config.segmentVerticalPadding === undefined || config.segmentVerticalPadding === null ||
+      typeof config.segmentVerticalPadding !== "number" 
+    ) {
+      throw new Error("In the config you passed to the VerticalSegmentViz constructor, either margin is undefined, null, or does not have the required proporties, or one or more of the required properties are not numbers, or vizWidth, vizHeight, segmentWidth, or segmentHeight are null, undefined or not numbers.")
+    }
     //check that there's enough vertical space
     if (
       config.vizHeight - (

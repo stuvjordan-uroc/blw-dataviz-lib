@@ -10,10 +10,11 @@ export interface DataRow {
 export type ResponsesSegmentMap = Map<Array<string>, Segment>;
 export type VerticalScale = Map<Array<string>, ResponsesSegmentMap>;
 export interface Margin {
+  [index: string]: number;
   top: number;
   right: number;
   bottom: number;
-  left: number;
+  left: number
 }
 export interface Band {
   left: number;
