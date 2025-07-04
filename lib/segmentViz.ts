@@ -128,9 +128,12 @@ function vSegmentVizSanityCheck(config: HorizontalConfig) {
 }
 
 export class VerticalSegmentViz {
+  //members
   #proportions: ProportionsMap
   config: HorizontalConfig
   P: (string, string) => number
+  
+  //constructor
   constructor(config: HorizontalConfig) {
     vSegmentVizSanityCheck(config)
     this.config = config
