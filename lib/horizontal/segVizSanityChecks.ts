@@ -1,13 +1,13 @@
 import type { HorizontalConfig } from "./types"
 
-export function vSegmentVizSanityCheck(config: HorizontalConfig) {
+export function hSegmentVizSanityCheck(config: HorizontalConfig) {
   //check that the groupKey and responseKey are present and strings as required
   if (
     config.groupKey === undefined || config.responseKey === undefined ||
     config.groupKey === null || config.responseKey === null ||
     !(typeof config.groupKey === "string") || !(typeof config.responseKey === "string")
   ) {
-    throw new Error("groupKey and responseKey must be defined and included in config object passed to verticalSegmentViz constructor.")
+    throw new Error("groupKey and responseKey must be defined and included in config object passed to HorizontalSegmentViz constructor.")
   }
   //check that the data is defined, has the right structure,
   //and that the rows have properties groupKey and responseKey
@@ -19,7 +19,7 @@ export function vSegmentVizSanityCheck(config: HorizontalConfig) {
       Object.hasOwn(row, config.groupKey) && Object.hasOwn(row, config.responseKey)
     ))
   ) {
-    throw new Error("The data passed to constructor of verticalSegmentViz is either undefined or null, or has at least one row that is null, not an object, or not an object with the responseKey and groupKey you passed.")
+    throw new Error("The data passed to constructor of HorizontalSegmentViz is either undefined or null, or has at least one row that is null, not an object, or not an object with the responseKey and groupKey you passed.")
   }
   //check that the groups array is defined, correctly structured, and has valid entries
   if (
@@ -32,12 +32,12 @@ export function vSegmentVizSanityCheck(config: HorizontalConfig) {
       ))
     ))
   ) {
-    throw new Error("The groups passed to the constructor of verticalSegmentViz is either undefined or null, or is not an array.  Or one or more of it's entries is not an array of strings. ")
+    throw new Error("The groups passed to the constructor of HorizontalSegmentViz is either undefined or null, or is not an array.  Or one or more of it's entries is not an array of strings. ")
   }
   //check that every group in the groups array has more than zero rows in data.
   config.groups.forEach(group => {
     if (!config.data.some(row => group.includes(row[config.groupKey]))) {
-      throw new Error(`In the config you passed to the verticalSegmentViz constructor, there are zero rows in the data with property ${config.groupKey} contained in group ${group}`)
+      throw new Error(`In the config you passed to the HorizontalSegmentViz constructor, there are zero rows in the data with property ${config.groupKey} contained in group ${group}`)
     }
   })
   //check that the entries of the groupArray are mutually exclusive
@@ -45,7 +45,7 @@ export function vSegmentVizSanityCheck(config: HorizontalConfig) {
   for (let i = 0; i < config.groups.length - 1; i++) {
     for (let j = i + 1; j < config.groups.length; j++) {
       if (!groupsAsSets[i].isDisjointFrom(groupsAsSets[j])) {
-        throw new Error(`The groups you passed to the verticalSegmentViz constructor are not mutually exclusive.`)
+        throw new Error(`The groups you passed to the HorizontalSegmentViz constructor are not mutually exclusive.`)
       }
     }
   }
@@ -60,14 +60,14 @@ export function vSegmentVizSanityCheck(config: HorizontalConfig) {
       ))
     ))
   ) {
-    throw new Error("The responses passed to the constructor of verticalSegmentViz is either undefined or null, or is not an array.  Or one or more of it's entries is not an array of strings. ")
+    throw new Error("The responses passed to the constructor of HorizontalSegmentViz is either undefined or null, or is not an array.  Or one or more of it's entries is not an array of strings. ")
   }
   //check that the response groups are exhaustive within each group
   config.groups.forEach(group => {
     const groupData = config.data.filter(row => group.includes(row[config.groupKey]))
     const excludedRows = groupData.filter(row => config.responses.every(responseGroup => !responseGroup.includes(row[config.responseKey]))).length
     if (excludedRows > 0) {
-      throw new Error(`In the data you passed to the verticalSegmentViz constructor, there are rows in group ${group} that are not included in any of the response you passed to the config.`)
+      throw new Error(`In the data you passed to the HorizontalSegmentViz constructor, there are rows in group ${group} that are not included in any of the response you passed to the config.`)
     }
   })
   //check that the response groups are mutually exclusive
@@ -75,7 +75,7 @@ export function vSegmentVizSanityCheck(config: HorizontalConfig) {
   for (let i = 0; i < config.responses.length - 1; i++) {
     for (let j = i + 1; j < config.responses.length; j++) {
       if (!responsesAsSets[i].isDisjointFrom(responsesAsSets[j])) {
-        throw new Error(`The responses you passed to the verticalSegmentViz constructor are not mutually exclusive.`)
+        throw new Error(`The responses you passed to the HorizontalSegmentViz constructor are not mutually exclusive.`)
       }
     }
   }
@@ -92,30 +92,30 @@ export function vSegmentVizSanityCheck(config: HorizontalConfig) {
     typeof config.vizWidth !== "number" ||
     config.vizHeight === undefined || config.vizHeight === null ||
     typeof config.vizHeight !== "number" ||
-    config.segmentWidth === undefined || config.segmentWidth === null ||
-    typeof config.segmentWidth !== "number" ||
-    config.segmentVerticalPadding === undefined || config.segmentVerticalPadding === null ||
-    typeof config.segmentVerticalPadding !== "number"
+    config.segmentHeight === undefined || config.segmentHeight === null ||
+    typeof config.segmentHeight !== "number" ||
+    config.segmentHorizontalPadding === undefined || config.segmentHorizontalPadding === null ||
+    typeof config.segmentHorizontalPadding !== "number"
   ) {
-    throw new Error("In the config you passed to the VerticalSegmentViz constructor, either margin is undefined, null, or does not have the required proporties, or one or more of the required properties are not numbers, or vizWidth, vizHeight, segmentWidth, or segmentHeight are null, undefined or not numbers.")
+    throw new Error("In the config you passed to the HorizontalSegmentViz constructor, either margin is undefined, null, or does not have the required proporties, or one or more of the required properties are not numbers, or vizWidth, vizHeight, segmentWidth, or segmentHeight are null, undefined or not numbers.")
   }
-  //check that there's enough vertical space
-  if (
-    config.vizHeight - (
-      config.margin.top + config.margin.bottom +
-      config.segmentVerticalPadding * config.responses.length
-    ) <= 0
-  ) {
-    throw new Error(`In the config you passed to the verticalSegmentViz constructor, the margin.top plus the margin.bottom plus the vertical padding times (responses.length-1) exceeds the vizHeight.`)
-  }
-
   //check that there's enough horizontal space
   if (
     config.vizWidth - (
       config.margin.left + config.margin.right +
-      config.segmentWidth * config.groups.length
+      config.segmentHorizontalPadding * (config.responses.length-1)
+    ) <= 0
+  ) {
+    throw new Error(`In the config you passed to the HorizontalSegmentViz constructor, the margin.left plus the margin.right plus the horizontal padding times (responses.length-1) exceeds the vizWidth.`)
+  }
+
+  //check that there's enough vertical space
+  if (
+    config.vizHeight - (
+      config.margin.top + config.margin.bottom +
+      config.segmentHeight * config.groups.length
     ) < 0
   ) {
-    throw new Error(`In the config you passed to the verticalSegmentViz constructor, the margin.left plus the margin.right plus the segmentWidth times groups.length exceeds the vizWidth.`)
+    throw new Error(`In the config you passed to the HorizontalSegmentViz constructor, the margin.top plus the margin.bottom plus the segmentHeight times groups.length exceeds the vizHeight.`)
   }
 }

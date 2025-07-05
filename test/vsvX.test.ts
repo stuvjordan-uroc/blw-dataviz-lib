@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { makeProportions } from "../lib/makeProportions"
 import type { DataRow } from '../lib/vertical/types'
+import { VerticalSegmentViz } from '../lib/vertical/segmentViz'
 
 
 interface CorrectProportions {
@@ -98,17 +98,48 @@ correctProportions = {
 const testData = aData.concat(bData).concat(cData)
 const testGroups = ['A', 'B', 'C'].map((el) => Array(el))
 const testResponses = ['w', 'x', 'y'].map((el) => Array(el))
-const testProportions = makeProportions(
-  testData,
-  testGroups,
-  testResponses,
-  "group",
-  "response"
-)
-testGroups.forEach(groupArray => {
-  testResponses.forEach(responseArray => {
-    test(`Should have the correct proportion for group ${groupArray[0]} and response ${responseArray[0]}`, () => {
-      expect(testProportions.get(groupArray)?.get(responseArray)).toBeCloseTo(correctProportions[groupArray[0]][responseArray[0]])
-    })
+
+const vsv = new VerticalSegmentViz({
+  data: testData,
+  groups: testGroups,
+  responses: testResponses,
+  groupKey: "group",
+  responseKey: "response",
+  vizWidth: 1020,
+  vizHeight: 1000,
+  margin: {top: 10, left: 10, bottom: 10, right: 10},
+  segmentVerticalPadding: 20,
+  segmentWidth: 100
+})
+
+//in this test case, vizWidth - margin.left - margin.right = 1000
+//so with segmentWidth = 100, and three groups, we should have
+//2 pads between the three columns of (1000-300)/2 = 350
+
+const correctX = {
+  A: {
+    xMin: 10,
+    xMax: 110
+  },
+  B: {
+    xMin: 460,
+    xMax: 560
+  },
+  C: {
+    xMin: 910,
+    xMax: 1010
+  }
+}
+
+Object.keys(correctX).forEach(groupString => {
+  test(`X gives the correct xLeft at ${groupString}`, () => {
+    expect(vsv.X(groupString)?.xLeft).toBeCloseTo(correctX[groupString].xMin)
   })
+  test(`X gives the correct xRight at ${groupString}`, () => {
+    expect(vsv.X(groupString)?.xRight).toBeCloseTo(correctX[groupString].xMax)
+  })
+})
+
+test("X returns null at unknown group", () => {
+  expect(vsv.X("unknown")).toBeNull()
 })

@@ -21,7 +21,7 @@ export interface Band {
   width: number;
 }
 export type HorizontalScale = Map<Array<string>,Band>
-export interface HorizontalConfig {
+export interface VerticalConfig {
   data: Array<DataRow>, 
   groups: Array<Array<string>>, 
   responses: Array<Array<string>>, 

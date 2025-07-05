@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { makeProportions } from "../lib/makeProportions"
 import type { DataRow } from '../lib/vertical/types'
+import { VerticalSegmentViz } from '../lib/vertical/segmentViz'
 
 
 interface CorrectProportions {
@@ -98,17 +98,26 @@ correctProportions = {
 const testData = aData.concat(bData).concat(cData)
 const testGroups = ['A', 'B', 'C'].map((el) => Array(el))
 const testResponses = ['w', 'x', 'y'].map((el) => Array(el))
-const testProportions = makeProportions(
-  testData,
-  testGroups,
-  testResponses,
-  "group",
-  "response"
-)
-testGroups.forEach(groupArray => {
-  testResponses.forEach(responseArray => {
-    test(`Should have the correct proportion for group ${groupArray[0]} and response ${responseArray[0]}`, () => {
-      expect(testProportions.get(groupArray)?.get(responseArray)).toBeCloseTo(correctProportions[groupArray[0]][responseArray[0]])
-    })
-  })
+
+const vsv = new VerticalSegmentViz({
+  data: testData,
+  groups: testGroups,
+  responses: testResponses,
+  groupKey: "group",
+  responseKey: "response",
+  vizWidth: 1000,
+  vizHeight: 1000,
+  margin: {top: 10, left: 10, bottom: 10, right: 10},
+  segmentVerticalPadding: 20,
+  segmentWidth: 100
+})
+
+test('P will return the correct answer', () => {
+  expect(vsv.P('A', 'w')).toBeCloseTo(correctProportions['A']['w'])
+})
+test('P will return null for an unknown response', () => {
+  expect(vsv.P('A', 'unknown')).toBeNull()
+})
+test('P will return null for an unknown group', () => {
+  expect(vsv.P('unknown', 'x')).toBeNull()
 })

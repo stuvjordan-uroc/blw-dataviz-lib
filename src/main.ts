@@ -55,25 +55,6 @@ const margin = { top: 10, right: 120, bottom: 10, left: 120 };
 
 //make the viz object
 
-const viz = segmentViz(
-  exampleData,
-  groups,
-  responses,
-  "pid3",
-  "bidenWinner",
-  margin,
-  frameWidth,
-  frameHeight,
-  -30 + (frameWidth - margin.left - margin.right) / 3.0,
-  40
-)
 
 //test with jittered points
-svg.selectAll("circle")
-  .data(exampleData)
-  .join("circle")
-    .attr("class", d => d.pid3.toLowerCase())
-    .attr("cx", d => viz.X(d.pid3)?.xMin + Math.random()*(viz.X(d.pid3)?.xMax - viz.X(d.pid3)?.xMin))
-    .attr("cy", d => viz.Y(d.pid3,d.bidenWinner)?.yMin + Math.random()*(viz.Y(d.pid3,d.bidenWinner)?.yMax - viz.Y(d.pid3,d.bidenWinner)?.yMin))
-
 

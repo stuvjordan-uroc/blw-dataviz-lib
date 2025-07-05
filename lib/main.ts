@@ -1,5 +1,2 @@
-export { makeProportions } from "./makeProportions";
-export { makeVerticalScale } from "./makeVerticalScale";
-export { makeHorizontalScale } from "./makeHorizontalScale";
-export { segmentViz, VerticalSegmentViz } from "./segmentViz"
-
+export { VerticalSegmentViz } from "./vertical/segmentViz"
+export { HorizontalSegmentViz } from "./horizontal/segmentViz"
