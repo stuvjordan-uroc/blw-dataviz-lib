@@ -11,9 +11,6 @@ export function makeHorizontalScale(
   const horizontalScale: HorizontalScale = new Map();
   Array.from(proportionsMap.keys()).forEach(group => {
     const responseScale: ResponsesSegmentMap = new Map();
-    if (proportionsMap.get(group) === undefined || proportionsMap.get(group)?.keys() === undefined) {
-      return null
-    }
     const arrayOfResponseGroups = Array.from(proportionsMap.get(group)?.keys() as Iterable<string[]>)
     const totalWidth = vizWidth - margin.left - margin.right - segmentPadding *(arrayOfResponseGroups.length - 1);
     for (let i = 0; i < arrayOfResponseGroups.length; i++){

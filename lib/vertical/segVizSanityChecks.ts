@@ -1,6 +1,6 @@
-import type { HorizontalConfig } from "./types"
+import type { VerticalConfig } from "./types"
 
-export function vSegmentVizSanityCheck(config: HorizontalConfig) {
+export function vSegmentVizSanityCheck(config: VerticalConfig) {
   //check that the groupKey and responseKey are present and strings as required
   if (
     config.groupKey === undefined || config.responseKey === undefined ||

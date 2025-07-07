@@ -11,8 +11,19 @@ export function makeHorizontalScale(
   const padding = blankSpace / (groupsArray.length - 1)
   const horizontalScale: HorizontalScale = new Map()
   for (let i = 0; i < groupsArray.length; i++) {
+    let left = margin.left
+    if(
+      i > 0 &&
+      groupsArray &&
+      groupsArray[i-1] &&
+      horizontalScale &&
+      horizontalScale.get(groupsArray[i-1])
+    ){
+      let segment = horizontalScale.get(groupsArray[i-1]) as {left: number, width: number}
+      left = segment.left + segment.width + padding
+    }
     horizontalScale.set(groupsArray[i], {
-      left: (i === 0) ? margin.left : horizontalScale.get(groupsArray[i - 1]).left + horizontalScale.get(groupsArray[i - 1]).width + padding,
+      left: left,
       width: bandwidth
     })
   }

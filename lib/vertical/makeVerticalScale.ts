@@ -11,14 +11,34 @@ export function makeVerticalScale(
   const verticalScale: VerticalScale = new Map();
   Array.from(proportionsMap.keys()).forEach(group => {
     const responseScale: ResponsesSegmentMap = new Map();
-    const arrayOfResponseGroups = Array.from(proportionsMap.get(group)?.keys())
+    const arrayOfResponseGroups = Array.from(proportionsMap.get(group)?.keys() as Iterable<string[]>)
     const totalHeight = vizHeight - margin.top - margin.bottom - segmentPadding *(arrayOfResponseGroups.length - 1);
     for (let i = 0; i < arrayOfResponseGroups.length; i++){
-      const top = (i === 0) ? margin.top : responseScale.get(arrayOfResponseGroups[i-1]).top + responseScale.get(arrayOfResponseGroups[i-1]).height + segmentPadding
+      let top = margin.top
+      if (
+        i > 0 &&
+        arrayOfResponseGroups &&
+        arrayOfResponseGroups[i-1] &&
+        responseScale &&
+        responseScale.get(arrayOfResponseGroups[i-1])
+      ) {
+        const segment = responseScale.get(arrayOfResponseGroups[i-1]) as {top: number, height: number}
+        top = segment.top + segment.height + segmentPadding
+      }
+      let p = 0
+      if (
+        proportionsMap &&
+        proportionsMap.get(group) &&
+        arrayOfResponseGroups[i] &&
+        proportionsMap.get(group)?.get(arrayOfResponseGroups[i])
+      )
+      {
+        p = proportionsMap.get(group)?.get(arrayOfResponseGroups[i]) as number
+      }
       responseScale.set(arrayOfResponseGroups[i],
         {
           top: top,
-          height: totalHeight*proportionsMap.get(group)?.get(arrayOfResponseGroups[i])
+          height: totalHeight*p
         }
       )  
     }

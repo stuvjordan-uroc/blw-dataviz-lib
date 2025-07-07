@@ -1,4 +1,5 @@
-import type { ProportionsMap } from "./types";
+type ResponsesProportionMap = Map<Array<string>, number>;
+type ProportionsMap = Map<Array<string>, ResponsesProportionMap>;
 
 
 export function makeProportions(
