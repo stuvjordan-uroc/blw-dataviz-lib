@@ -22,3 +22,14 @@ export interface HorizontalConfig {
 }
 export type ResponsesProportionMap = Map<Array<string>, number>;
 export type ProportionsMap = Map<Array<string>, ResponsesProportionMap>;
+export interface Band {
+  top: number;
+  height: number;
+}
+export type VerticalScale = Map<Array<string>,Band>
+export interface Segment {
+  left: number;
+  width: number;
+}
+export type ResponsesSegmentMap = Map<Array<string>, Segment>
+export type HorizontalScale = Map<Array<string>, ResponsesSegmentMap>

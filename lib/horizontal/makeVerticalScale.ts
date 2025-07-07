@@ -1,20 +1,20 @@
-import type { HorizontalScale, Margin, ProportionsMap } from "./types";
+import type { VerticalScale, Margin, ProportionsMap } from "./types";
 
-export function makeHorizontalScale(
+export function makeVerticalScale(
   proportions: ProportionsMap, 
-  bandwidth: number, 
+  bandheight: number, 
   margin: Margin, 
-  vizWidth: number
-): HorizontalScale {
+  vizHeight: number
+): VerticalScale {
   const groupsArray = Array.from(proportions.keys());
-  const blankSpace = vizWidth - margin.left - margin.right - (groupsArray.length * bandwidth)
+  const blankSpace = vizHeight - margin.top - margin.bottom - (groupsArray.length * bandheight)
   const padding = blankSpace / (groupsArray.length - 1)
-  const horizontalScale: HorizontalScale = new Map()
+  const verticalScale: VerticalScale = new Map()
   for (let i = 0; i < groupsArray.length; i++) {
-    horizontalScale.set(groupsArray[i], {
-      left: (i === 0) ? margin.left : horizontalScale.get(groupsArray[i - 1]).left + horizontalScale.get(groupsArray[i - 1]).width + padding,
-      width: bandwidth
+    verticalScale.set(groupsArray[i], {
+      top: (i === 0) ? margin.top : verticalScale.get(groupsArray[i - 1]).top + verticalScale.get(groupsArray[i - 1]).height + padding,
+      height: bandheight
     })
   }
-  return horizontalScale
+  return verticalScale
 }
