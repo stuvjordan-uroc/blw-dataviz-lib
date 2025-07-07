@@ -11,14 +11,41 @@ export function makeHorizontalScale(
   const horizontalScale: HorizontalScale = new Map();
   Array.from(proportionsMap.keys()).forEach(group => {
     const responseScale: ResponsesSegmentMap = new Map();
-    const arrayOfResponseGroups = Array.from(proportionsMap.get(group)?.keys())
+    if (proportionsMap.get(group) === undefined || proportionsMap.get(group)?.keys() === undefined) {
+      return null
+    }
+    const arrayOfResponseGroups = Array.from(proportionsMap.get(group)?.keys() as Iterable<string[]>)
     const totalWidth = vizWidth - margin.left - margin.right - segmentPadding *(arrayOfResponseGroups.length - 1);
     for (let i = 0; i < arrayOfResponseGroups.length; i++){
-      const left = (i === 0) ? margin.left : responseScale.get(arrayOfResponseGroups[i-1]).left + responseScale.get(arrayOfResponseGroups[i-1]).width + segmentPadding
+      let left = margin.left
+      if (
+        i > 0 &&
+        arrayOfResponseGroups &&
+        arrayOfResponseGroups[i-1] &&
+        responseScale &&
+        responseScale.get(arrayOfResponseGroups[i-1])
+      ) {
+        const segment = responseScale.get(arrayOfResponseGroups[i-1]) as {left: number, width: number}
+        if (
+          Object.hasOwn(segment, "left") &&
+          Object.hasOwn(segment, "width")
+        ) {
+          left = segment.left + segment.width + segmentPadding
+        }
+      }
+      let p = 0
+      if (
+        proportionsMap &&
+        proportionsMap.get(group) &&
+        arrayOfResponseGroups[i] &&
+        proportionsMap.get(group)?.get(arrayOfResponseGroups[i])
+      ) {
+        p = proportionsMap.get(group)?.get(arrayOfResponseGroups[i]) as number
+      }
       responseScale.set(arrayOfResponseGroups[i],
         {
           left: left,
-          width: totalWidth*proportionsMap.get(group)?.get(arrayOfResponseGroups[i])
+          width: totalWidth*p
         }
       )  
     }

@@ -27,7 +27,7 @@ export interface Band {
   height: number;
 }
 export type VerticalScale = Map<Array<string>,Band>
-export interface Segment {
+export type Segment = {
   left: number;
   width: number;
 }
