@@ -1,60 +1,35 @@
-import { segmentViz } from "../lib/main"
+import { newResponsiveSVG } from "../lib/main";
 
+const svgId = newResponsiveSVG({
+  maxXCoord: 900,
+  maxYCoord: 600,
+  containerId: "svg-frame"
+})
 
-//example data
-
-const exampleGroups = ["Democrat", "Independent", "Republican"];
-const exampleResponses = [
-  "Definitely not the rightful winner",
-  "Probably not the rightful winner",
-  "Probably the rightful winner",
-  "Definitely the rightful winner",
-];
-/*
-const exampleData: Array<{ [key: string]: string }> = new Array(1000)
-  .fill(1)
-  .map(el => ({
-    bidenWinner: exampleResponses[Math.floor(Math.random() * exampleResponses.length)],
-    pid3: exampleGroups[Math.floor(Math.random() * exampleGroups.length)],
-  }));
-*/
-const exampleData = new Array()
-for (let i = 0; i < exampleGroups.length; i++) {
-  new Array(1000).fill(1).forEach((el) => {
-    exampleData.push({
-      bidenWinner: (Math.random() < (i+1)*0.25) ? 
-      (Math.random() < 0.5) ? "Definitely not the rightful winner" : "Probably not the rightful winner" :
-      (Math.random() < 0.5) ? "Probably the rightful winner" : "Definitely the rightful winner",
-      pid3: exampleGroups[i]
-    })
-  })
+if (!svgId) {
+  console.log("newResponsiveSVG failed!")
 }
-//set up the groups and responses for the plot
 
-const groups = [["Democrat"], ["Independent"], ["Republican"]];
-const responses = [
-  ["Definitely the rightful winner", "Probably the rightful winner"],
-  ["Probably not the rightful winner", "Definitely not the rightful winner"],
-];
+if (svgId) {
+  const svgElement = document.getElementById(svgId)
+  if (!svgElement) {
+    console.log("cannot find svg appended y newResponsiveSVG")
+  }
+  if (svgElement) {
+    console.log("putting circles into svg")
+    new Array(10).fill(1).map((el) => ({
+      x: Math.random()*900,
+      y: Math.random()*600
+    })).forEach((el) => {
+      const c = document.createElement("circle")
+      console.log(c)
+      c.setAttribute("cx", el.x.toString())
+      c.setAttribute("cy", el.y.toString())
+      c.setAttribute("fill", "green")
+      c.setAttribute("r", "10")
+      svgElement.appendChild(c)
+    })
+  }
+}
 
-//wait for load to finish, so styles are set, etc
-
-
-const frame = d3.select("#svg-frame")
-//hardcoding the height and width, because I can't seem to get css to load before js in vite dev server
-//const frameWidth = parseFloat(frame.style("width"))
-//const frameHeight = parseFloat(frame.style("height"))
-const frameWidth = 1000
-const frameHeight = 562
-const svg = frame.append("svg")
-  .attr("width", "1000")
-  .attr("height", "562")
-
-//set the margin object
-const margin = { top: 10, right: 120, bottom: 10, left: 120 };
-
-//make the viz object
-
-
-//test with jittered points
 

@@ -2,6 +2,8 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 
+
+
 export default defineConfig({
   plugins: [],
   build: {
@@ -15,5 +17,7 @@ export default defineConfig({
     port: 8002,
     host: '127.0.0.1'
   },
-  test: {}
+  test: {
+    globals: true
+  }
 })

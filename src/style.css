@@ -2,27 +2,5 @@
 
 .svg-frame {
   width: 1000px;
-  height: 562px;
-  min-height: 562px;
 }
 
-circle {
-  r: 4px;
-  fill-opacity: 0.2;
-  stroke-opacity: 0.5;
-}
-
-circle.republican {
-  stroke: red;
-  fill: red;
-}
-
-circle.independent {
-  stroke: green;
-  fill: green;
-}
-
-circle.democrat {
-  stroke: blue;
-  fill: blue;
-}

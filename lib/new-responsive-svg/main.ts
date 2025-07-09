@@ -12,7 +12,7 @@ export function newResponsiveSVG(config: {
     return null
   }
   //throw/return null if maxXCoord or maxYCoord are not sane
-  ["maxXCoord", "maxYCoord"].forEach((el) => {
+  Array("maxXCoord", "maxYCoord").forEach((el) => {
     if (!config[el]) {
       return null
     }
@@ -33,6 +33,7 @@ export function newResponsiveSVG(config: {
 
   
   const svgAspectRatio = xMaxNum/yMaxNum
+
   
   
   //create svg and set attributes
@@ -44,12 +45,18 @@ export function newResponsiveSVG(config: {
   svg.setAttribute("viewBox", `0 0 ${xMaxNum.toString()} ${yMaxNum.toString()}`)
   svg.setAttribute("preserveAspectRatio", "xMinYMid")
   
+  
   //resize svg to current parent width
   const parent = document.getElementById(config.containerId)
   if (!parent) {
     return null
   }
   const parentWidth = parseFloat(parent.style.width)
+  if (!parentWidth) {
+    throw Error(`The width property must be set in the styles of the parent with id ${config.containerId} for newResponsiveSVG to work properly`)
+  }
+  
+  console.log("initial parent width is", )
   resizeSVG(svg, parentWidth, svgAspectRatio)
 
   //set an event listener on the window that resizes the svg when called
