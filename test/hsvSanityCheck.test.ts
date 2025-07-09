@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import { HorizontalSegmentViz } from "../lib/main"
-import { HorizontalConfig } from '../lib/horizontal/types'
+import { HorizontalConfig } from '../lib/segment/horizontal/types'
 
 const testData = [
   {

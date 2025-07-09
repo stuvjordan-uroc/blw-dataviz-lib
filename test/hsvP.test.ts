@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import type { DataRow } from '../lib/vertical/types'
+import type { DataRow } from '../lib/segment/vertical/types'
 import { HorizontalSegmentViz } from '../lib/main'
 
 

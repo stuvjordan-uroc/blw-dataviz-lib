@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { makeProportions } from "../lib/makeProportions"
-import type { DataRow } from '../lib/vertical/types'
+import { makeProportions } from "../lib/segment/makeProportions"
+import type { DataRow } from '../lib/segment/vertical/types'
 
 
 interface CorrectProportions {

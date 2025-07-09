@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import type { DataRow } from '../lib/vertical/types'
-import { HorizontalSegmentViz } from '../lib/horizontal/segmentViz'
+import type { DataRow } from '../lib/segment/vertical/types'
+import { HorizontalSegmentViz } from '../lib/main'
 
 
 interface CorrectProportions {
