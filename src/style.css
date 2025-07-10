@@ -1,6 +1,25 @@
 
 
 .svg-frame {
-  width: 1000px;
+  width: 300px;
+  padding-left: 3rem;
+  padding-right: 2rem;
 }
 
+circle {
+  fill: green;
+  fill-opacity: 0.5;
+  stroke: black;
+}
+
+@media screen and (800px <= width < 1000px) {
+  .svg-frame {
+    width: 799px;
+  }
+}
+
+@media screen and (1000px < width) {
+  .svg-frame {
+    width: 999px;
+  }
+}

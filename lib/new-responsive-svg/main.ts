@@ -1,7 +1,8 @@
 import { randomId } from "./random-id"
 import { resizeSVG } from "./resize-svg"
+import { getElementContentWidth } from "./get-element-content-width"
 export function newResponsiveSVG(config: {
-  [key: string] : number | string,
+  [key: string]: number | string,
   maxXCoord: number | string,
   maxYCoord: number | string,
   containerId: string
@@ -9,17 +10,19 @@ export function newResponsiveSVG(config: {
 
   //return null if config undefined
   if (!config) {
+    console.log("no config passed to newResponseSVG.  Returning null")
     return null
   }
   //throw/return null if maxXCoord or maxYCoord are not sane
   Array("maxXCoord", "maxYCoord").forEach((el) => {
     if (!config[el]) {
+      console.log(`config passed to newResponsiveSVG is missing ${el}. Returning null.`)
       return null
     }
-    if (!["string", "number"].includes(typeof config[el])){
+    if (!["string", "number"].includes(typeof config[el])) {
       throw new Error(`The ${el} property of the config you pass to newResponsiveSVG must be a string or number`)
     }
-  }) 
+  })
 
   //make the xMax and yMax into numbers
   const xMaxNum = (typeof config.maxXCoord === "number") ? config.maxXCoord : parseFloat(config.maxXCoord);
@@ -31,50 +34,63 @@ export function newResponsiveSVG(config: {
 
   //calculate the aspect ratio
 
-  
-  const svgAspectRatio = xMaxNum/yMaxNum
 
-  
-  
+  const svgAspectRatio = xMaxNum / yMaxNum
+
+
+
   //create svg and set attributes
-  const svg = document.createElement("svg")
+  const svgNamespace = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNamespace, "svg")
   const svgId = randomId()
   svg.setAttribute("id", svgId)
   svg.setAttribute("width", xMaxNum.toString())
   svg.setAttribute("height", yMaxNum.toString())
   svg.setAttribute("viewBox", `0 0 ${xMaxNum.toString()} ${yMaxNum.toString()}`)
   svg.setAttribute("preserveAspectRatio", "xMinYMid")
-  
-  
+
+
+
   //resize svg to current parent width
   const parent = document.getElementById(config.containerId)
+
   if (!parent) {
+    console.log(`newResponsiveSVG cannot locate element with id ${config.containerId}`)
     return null
   }
-  const parentWidth = parseFloat(parent.style.width)
-  if (!parentWidth) {
-    throw Error(`The width property must be set in the styles of the parent with id ${config.containerId} for newResponsiveSVG to work properly`)
-  }
   
-  console.log("initial parent width is", )
-  resizeSVG(svg, parentWidth, svgAspectRatio)
+  let pw = getElementContentWidth(parent)
 
-  //set an event listener on the window that resizes the svg when called
-  window.addEventListener("resize", () => {
-    const parent = document.getElementById(config.containerId)
-    if (!parent) {
-      throw new Error(`We detected a window resize, and thus tried to resize an svg created with newResponseiveSVG.  But you passed the containerId ${config.containerId} to newResponsiveSVG and we cannot find an element in the document with that id.`)
-    }
-    const parentWidth = parseFloat(parent.style.width)
-    resizeSVG(svg, parentWidth, svgAspectRatio)
-  })
+  if (isNaN(pw)) {
+    console.log(`new responsive SVG got NAN when it tried to get the width of ${parent}`)
+    return null
+  } else {
+    resizeSVG(svg, pw, svgAspectRatio)
+    //set an event listener on the window that resizes the svg when called
+    window.addEventListener("resize", () => {
+      const parent = document.getElementById(config.containerId)
+      if (!parent) {
+        throw new Error(`We detected a window resize, and thus tried to resize an svg created with newResponseiveSVG.  But you passed the containerId ${config.containerId} to newResponsiveSVG and we cannot find an element in the document with that id.`)
+      }
+      let newpw = getElementContentWidth(parent)
+      if (isNaN(newpw)) {
+        throw new Error(`We detected a resize, and thus tried to resize an svg created with newResponseiveSVG. But got NAN when we tried to get the width of ${parent}`)
+      } else {
+        resizeSVG(svg, newpw, svgAspectRatio)
+      }
+    })
 
 
-  //attach svg to the container
-  parent.appendChild(svg)
+    //attach svg to the container
+    parent.appendChild(svg)
 
-  //return the id string of the svg
-  return svgId
+    //return the id string of the svg
+    return svgId
+  }
+
+
+
+
 
 
 
