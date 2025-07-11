@@ -54,6 +54,8 @@ export function newResponsiveSVG(config: {
   //resize svg to current parent width
   const parent = document.getElementById(config.containerId)
 
+
+
   if (!parent) {
     console.log(`newResponsiveSVG cannot locate element with id ${config.containerId}`)
     return null
@@ -61,8 +63,13 @@ export function newResponsiveSVG(config: {
   
   let pw = getElementContentWidth(parent)
 
+  //note: pw will be 0 or negative if the parent is inline or has no styles defined on it.
+
   if (isNaN(pw)) {
-    console.log(`new responsive SVG got NAN when it tried to get the width of ${parent}`)
+    console.log(`newResponsiveSVG got NAN when it tried to get the width of ${parent}`)
+    return null
+  } else if (pw <= 0){
+    console.log(`newResponsiveSVG got a 0 or negative value for the width of ${parent}`)
     return null
   } else {
     resizeSVG(svg, pw, svgAspectRatio)
@@ -75,6 +82,8 @@ export function newResponsiveSVG(config: {
       let newpw = getElementContentWidth(parent)
       if (isNaN(newpw)) {
         throw new Error(`We detected a resize, and thus tried to resize an svg created with newResponseiveSVG. But got NAN when we tried to get the width of ${parent}`)
+      } else if (newpw <= 0) {
+        throw new Error(`We detected a resize, and thus tried to resize an svg created with newResponseiveSVG. But got 0 or a negative number when we tried to get the width of ${parent}`)
       } else {
         resizeSVG(svg, newpw, svgAspectRatio)
       }
